@@ -38,30 +38,33 @@ namespace S7.Net.Types
                     case "Int16":
                     case "UInt16":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         numBytes += 2;
                         break;
                     case "Int32":
                     case "UInt32":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         numBytes += 4;
                         break;
                     case "Single":
                     case "Double":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         numBytes += 4;
                         break;
                     default:
+                        numBytes = Math.Ceiling(numBytes);
+                        if (numBytes % 2 > 0)
+                            numBytes++;
                         numBytes += GetStructSize(info.FieldType);
                         break;
                 }
             }
-            return (int)numBytes;
+            return (int)Math.Ceiling(numBytes);
         }
 
         /// <summary>
@@ -113,7 +116,7 @@ namespace S7.Net.Types
                         break;
                     case "Int16":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         // hier auswerten
                         ushort source = Word.FromBytes(bytes[(int)numBytes + 1], bytes[(int)numBytes]);
@@ -122,7 +125,7 @@ namespace S7.Net.Types
                         break;
                     case "UInt16":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         // hier auswerten
                         info.SetValue(structValue, Word.FromBytes(bytes[(int)numBytes + 1],
@@ -131,7 +134,7 @@ namespace S7.Net.Types
                         break;
                     case "Int32":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         // hier auswerten
                         uint sourceUInt = DWord.FromBytes(bytes[(int)numBytes + 3],
@@ -143,7 +146,7 @@ namespace S7.Net.Types
                         break;
                     case "UInt32":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         // hier auswerten
                         info.SetValue(structValue, DWord.FromBytes(bytes[(int)numBytes],
@@ -154,7 +157,7 @@ namespace S7.Net.Types
                         break;
                     case "Double":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         // hier auswerten
                         info.SetValue(structValue, Double.FromByteArray(new byte[] { bytes[(int)numBytes],
@@ -165,7 +168,7 @@ namespace S7.Net.Types
                         break;
                     case "Single":
                         numBytes = Math.Ceiling(numBytes);
-                        if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
+                        if (numBytes % 2 > 0)
                             numBytes++;
                         // hier auswerten
                         info.SetValue(structValue, Single.FromByteArray(new byte[] { bytes[(int)numBytes],
@@ -175,6 +178,8 @@ namespace S7.Net.Types
                         numBytes += 4;
                         break;
                     default:
+                        if (numBytes % 2 > 0)
+                            numBytes++;
                         var buffer = new byte[GetStructSize(info.FieldType)];
                         if (buffer.Length == 0)
                             continue;
